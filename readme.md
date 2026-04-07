@@ -29,3 +29,5 @@ Um sistema de gerador de charadas com card interativo, sistema de pontuação e 
 ### 1. Inicie o servidor
 ```bash
 python app.py
+
+## Link da Vercel : 'https://projeto-charada-front.vercel.app/'
