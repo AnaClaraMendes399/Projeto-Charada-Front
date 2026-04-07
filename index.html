@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&family=MedievalSharp&family=Special+Elite&display=swap" rel="stylesheet">
+    <title>Charadas | O Enigma</title>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes glowPulse {
+            0%, 100% { 
+                text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+            }
+            50% { 
+                text-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+            }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        @keyframes toastShow {
+            0% { transform: translateX(-50%) translateY(20px); opacity: 0; }
+            100% { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
+        
+        body {
+            animation: fadeIn 0.5s ease-out;
+            font-family: 'Special Elite', 'Inter', monospace, system-ui;
+            background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #0a0a14 100%);
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(1px 1px at 20px 30px, #ffd700, rgba(0,0,0,0)),
+                              radial-gradient(1px 1px at 60px 80px, #ffd700, rgba(0,0,0,0));
+            background-size: 200px 200px, 150px 150px;
+            background-repeat: repeat;
+            opacity: 0.2;
+            pointer-events: none;
+        }
+        
+        .card-shadow {
+            box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(218, 165, 32, 0.3);
+        }
+        
+        .card-shadow:hover {
+            box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.6), 0 0 0 2px rgba(218, 165, 32, 0.5);
+        }
+        
+        .glow-text {
+            animation: glowPulse 3s ease-in-out infinite;
+        }
+        
+        .float-element {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        #card-inner {
+            transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        
+        .toast-active {
+            animation: toastShow 0.3s ease-out;
+        }
+        
+        .parchment {
+            background: linear-gradient(135deg, #fdf4dc 0%, #f5e6c8 50%, #f0dbb4 100%);
+        }
+        
+        .dark-reveal {
+            background: linear-gradient(135deg, #1e1e2f 0%, #2a2a3e 100%);
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="min-h-screen flex flex-col items-center justify-center p-5 relative z-10">
+        
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="text-5xl mb-2 float-element"></div>
+            <h1 class="text-6xl md:text-7xl font-bold tracking-wide glow-text" style="font-family: 'MedievalSharp', 'Creepster', cursive; background: linear-gradient(135deg, #ffd700, #daa520, #b8860b); -webkit-background-clip: text; background-clip: text; color: transparent;">
+                CHARADAS
+            </h1>
+        </div>
+        
+        <!-- Stats -->
+        <div class="flex gap-10 mb-8 text-center">
+            <div>
+                <div class="text-amber-400 text-[11px] font-bold uppercase tracking-wider">acertos</div>
+                <div class="text-amber-300 text-3xl font-bold" id="acertos">0</div>
+            </div>
+            <div class="w-px h-8 bg-amber-500/50"></div>
+            <div>
+                <div class="text-amber-400 text-[11px] font-bold uppercase tracking-wider">sequência</div>
+                <div class="text-amber-300 text-3xl font-bold" id="sequencia">0</div>
+            </div>
+            <div class="w-px h-8 bg-amber-500/50"></div>
+            <div>
+                <div class="text-amber-400 text-[11px] font-bold uppercase tracking-wider">total</div>
+                <div class="text-amber-300 text-3xl font-bold" id="totalCharadas">0</div>
+            </div>
+        </div>
+        
+        <!-- Card -->
+        <div class="w-full max-w-md [perspective:1200px] h-[450px] mb-6">
+            <div id="card-inner" class="relative w-full h-full transition-all duration-600 [transform-style:preserve-3d] cursor-pointer card-shadow rounded-xl">
+               
+                <!-- Pergunta -->
+                <div class="absolute inset-0 [backface-visibility:hidden] parchment rounded-xl flex flex-col items-center justify-center p-7 text-center border-2 border-amber-700/40">
+                    <div class="w-16 h-16 bg-amber-700/20 rounded-full flex items-center justify-center mb-6 border border-amber-600/40">
+                        <span class="text-4xl">?</span>
+                    </div>
+                    <span class="text-amber-800 font-bold text-[11px] uppercase tracking-[3px] mb-4">
+                        ✦ pergunta ✦
+                    </span>
+                    <p id="pergunta" class="text-stone-800 text-xl font-bold leading-relaxed">
+                        Carregando...
+                    </p>
+                </div>
+
+                <!-- Resposta -->
+                <div class="absolute inset-0 [backface-visibility:hidden] dark-reveal rounded-xl flex flex-col items-center justify-center p-7 text-center [transform:rotateY(180deg)] border-2 border-amber-600/60 shadow-2xl">
+                    <p id="resposta" class="text-amber-100 text-xl font-bold leading-relaxed mb-6"></p>
+                    <div class="flex gap-3 mt-2">
+                        <button id="btnAcertou" class="bg-emerald-700 hover:bg-emerald-600 text-white text-sm font-bold py-2 px-5 rounded-full">
+                            ✓ desvendei
+                        </button>
+                        <button id="btnErrou" class="bg-red-700 hover:bg-red-600 text-white text-sm font-bold py-2 px-5 rounded-full">
+                            ✗ falhei
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+        <!-- Botões -->
+        <div class="flex gap-3">
+            <button id="btn-nova" class="bg-amber-600 hover:bg-amber-500 text-white font-bold py-3 px-8 rounded-full">
+                ⚡ novo enigma →
+            </button>
+            
+            <button id="btnResetar" class="bg-stone-700 hover:bg-stone-600 text-white font-medium py-3 px-5 rounded-full">
+                resetar
+            </button>
+        </div>
+        
+        <!-- Toast -->
+        <div id="toast" class="fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-stone-900/95 text-amber-200 text-sm py-2 px-5 rounded-full opacity-0 pointer-events-none border border-amber-600/50">
+            <span id="toastMsg"></span>
+        </div>
+        
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
