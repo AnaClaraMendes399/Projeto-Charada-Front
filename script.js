@@ -67,7 +67,7 @@ async function buscaCharada() {
     
     try {
         aguardandoNovaCharada = true
-        const resposta = await fetch('http://127.0.0.1:5000/charadas/aleatoria')
+        const resposta = await fetch('https://geradorde-charadas.vercel.app/charadas/aleatoria')
         const dados = await resposta.json()
         campoPergunta.textContent = dados.pergunta
         campoResposta.textContent = dados.resposta
