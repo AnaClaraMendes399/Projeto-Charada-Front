@@ -13,6 +13,7 @@ const totalCharadasSpan = document.getElementById('totalCharadas')
 // Estado do jogo
 let acertos = 0, sequencia = 0, total = 0
 let aguardandoNovaCharada = false
+let cartaVirada = false // Controla se a carta está virada (mostrando resposta)
 
 // Atualizar placar
 function atualizarPlacar() {
@@ -32,18 +33,32 @@ if (saved) {
     atualizarPlacar()
 }
 
-// Função para virar o card
-function virarCard(mostrarResposta) {
-    if (mostrarResposta) {
-        cardInner.style.transform = 'rotateY(180deg)'
-    } else {
+// Função para virar o card (alterna entre pergunta e resposta)
+function alternarCard() {
+    if (cartaVirada) {
         cardInner.style.transform = 'rotateY(0deg)'
+        cartaVirada = false
+    } else {
+        cardInner.style.transform = 'rotateY(180deg)'
+        cartaVirada = true
     }
 }
 
-// Virar card quando clicar (mostrar resposta)
+// Função para mostrar apenas a pergunta (forçar frente do card)
+function mostrarPergunta() {
+    cardInner.style.transform = 'rotateY(0deg)'
+    cartaVirada = false
+}
+
+// Função para mostrar apenas a resposta (forçar verso do card)
+function mostrarResposta() {
+    cardInner.style.transform = 'rotateY(180deg)'
+    cartaVirada = true
+}
+
+// Virar card quando clicar (alterna entre pergunta e resposta)
 cardInner.addEventListener('click', () => {
-    virarCard(true)
+    alternarCard()
 })
 
 // Buscar charada
@@ -57,8 +72,8 @@ async function buscaCharada() {
         campoPergunta.textContent = dados.pergunta
         campoResposta.textContent = dados.resposta
         
-        // Virar para a frente (pergunta)
-        virarCard(false)
+        // Voltar para a pergunta (frente do card)
+        mostrarPergunta()
     } catch (erro) {
         campoPergunta.textContent = "Erro ao conectar ao servidor"
         campoResposta.textContent = "Verifique se o backend está rodando"
@@ -77,6 +92,15 @@ btnAcertou.addEventListener('click', (e) => {
     total++
     atualizarPlacar()
     
+    // Mostrar toast de confirmação
+    const toast = document.getElementById('toast')
+    const toastMsg = document.getElementById('toastMsg')
+    toastMsg.textContent = '🎉 Desvendou o enigma! +1 ponto'
+    toast.style.opacity = '1'
+    setTimeout(() => {
+        toast.style.opacity = '0'
+    }, 2000)
+    
     // Aguarda um pouco e busca nova charada
     setTimeout(() => {
         buscaCharada()
@@ -90,6 +114,15 @@ btnErrou.addEventListener('click', (e) => {
     sequencia = 0
     total++
     atualizarPlacar()
+    
+    // Mostrar toast de confirmação
+    const toast = document.getElementById('toast')
+    const toastMsg = document.getElementById('toastMsg')
+    toastMsg.textContent = '💀 Sequência quebrada! Tente novamente'
+    toast.style.opacity = '1'
+    setTimeout(() => {
+        toast.style.opacity = '0'
+    }, 2000)
     
     // Aguarda um pouco e busca nova charada
     setTimeout(() => {
