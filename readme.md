@@ -32,5 +32,5 @@ python app.py
 
 ## Link da Vercel : 'https://projeto-charada-front.vercel.app/'
 
-### Autora: Ana Clara Mendes Proença
-### E-mail: ana.mendes.senai@gmail.com
+## Autora: Ana Clara Mendes Proença
+## E-mail: ana.mendes.senai@gmail.com
