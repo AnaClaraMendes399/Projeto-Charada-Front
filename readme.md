@@ -31,3 +31,6 @@ Um sistema de gerador de charadas com card interativo, sistema de pontuação e 
 python app.py
 
 ## Link da Vercel : 'https://projeto-charada-front.vercel.app/'
+
+### Autora: Ana Clara Mendes Proença
+### E-mail: ana.mendes.senai@gmail.com
